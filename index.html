@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="main.css">
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="wrapper">
+    <button class="btn" onclick="swipeMenuOpen()">Click</button>
+  </div>
+  <div class="back">
+    <div class="hamburger-menu menu">
+      <div class="content">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var $swipeMenu = document.querySelector('.menu');
+    var $overlay = document.querySelector('.back');
+
+    var M_Width = $swipeMenu.clientWidth;
+    var menuLastX = -M_Width;
+
+    var dragMenu = false;
+
+    var mouseDownX = 0;
+    var moveDistance = -M_Width;
+
+    window.addEventListener('mousedown', function (e) {
+      if (e.clientX <= 150) {
+        swipeMenuDragStart(e);
+      }
+    })
+
+    window.addEventListener('mouseup', swipeMenuDragFinish)
+
+    window.addEventListener('mousemove', function (e) {
+      if (dragMenu) {
+        swipeMenuDrag(e);
+      }
+    })
+    $swipeMenu.addEventListener('mousedown', function (e) {
+      swipeMenuDragStart(e);
+    })
+    $overlay.addEventListener('mousedown', swipeMenuClose)
+
+    function swipeMenuDragStart(e) {
+      e.preventDefault();
+      mouseDownX = e.clientX;
+      dragMenu = true;
+    }
+
+    function swipeMenuDrag(e) {
+      moveDistance = Math.max(Math.min(e.clientX - mouseDownX + menuLastX, 0), -M_Width);
+      $swipeMenu.style.cssText = 'transform: translate(' + moveDistance + 'px, 0px)';
+      if (moveDistance > -M_Width) {
+        var opacity = Math.min((moveDistance + M_Width) / M_Width, 1);
+        $overlay.style.cssText = 'visibility: visible; opacity:' + opacity + '';
+      } else {
+        $overlay.style.cssText = 'visibility: hidden';
+      }
+    }
+
+    function swipeMenuDragFinish() {
+      dragMenu = false;
+      if (moveDistance + M_Width > M_Width / 2) {
+        swipeMenuOpen();
+      }
+    }
+
+    function swipeMenuOpen() {
+      $swipeMenu.classList.add('active');
+      $swipeMenu.style.cssText = 'transition: transform .15s linear';
+      $overlay.classList.add('active');
+      $overlay.style.cssText = 'transition: opacity .1s linear';
+      moveDistance = 0;
+      menuLastX = moveDistance;
+    }
+
+    function swipeMenuClose() {
+      $swipeMenu.classList.remove('active');
+      $swipeMenu.style.cssText = 'transition: transform 0.15s linear';
+      $overlay.classList.remove('active');
+      $overlay.style.cssText = 'transition: opacity .15s linear, visibility .2s linear';
+      moveDistance = -M_Width;
+      menuLastX = moveDistance;
+    }
+  </script>
+</body>
+
+</html>
