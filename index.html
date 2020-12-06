@@ -10,85 +10,88 @@
 
 <body>
   <div class="wrapper">
-    <button class="btn" onclick="swipeMenuOpen()">Click</button>
+    <button class="btn" onclick="menuOpen()">Click</button>    
   </div>
-  <div class="back">
-    <div class="hamburger-menu menu">
+  <div class="back"></div>
+    <div class="hamburger-menu menu">        
       <div class="content">
+        <a href="#">News</a>
+        <a href="#">Contacts</a>
+        <a href="#">Address</a>
       </div>
-    </div>
-  </div>
+    </div>  
+  
 
   <script>
-    var $swipeMenu = document.querySelector('.menu');
+    var $menu = document.querySelector('.menu');
     var $overlay = document.querySelector('.back');
 
-    var M_Width = $swipeMenu.clientWidth;
-    var menuLastX = -M_Width;
+    var menu_width = $menu.clientWidth;
+    var last_position = -menu_width;
 
-    var dragMenu = false;
+    var swipe_menu = false;
 
     var mouseDownX = 0;
-    var moveDistance = -M_Width;
+    var moveDistance = -menu_width;
 
     window.addEventListener('mousedown', function (e) {
-      if (e.clientX <= 150) {
-        swipeMenuDragStart(e);
+      if (e.clientX <= 100) {
+        menuStartSwipe(e);
       }
     })
 
-    window.addEventListener('mouseup', swipeMenuDragFinish)
+    window.addEventListener('mouseup', menuFinalSwipe)
 
     window.addEventListener('mousemove', function (e) {
-      if (dragMenu) {
-        swipeMenuDrag(e);
+      if (swipe_menu) {
+        menuDrag(e);
       }
     })
-    $swipeMenu.addEventListener('mousedown', function (e) {
-      swipeMenuDragStart(e);
+    $menu.addEventListener('mousedown', function (e) {
+      menuStartSwipe(e);
     })
-    $overlay.addEventListener('mousedown', swipeMenuClose)
+    $overlay.addEventListener('mousedown', menuClose)
 
-    function swipeMenuDragStart(e) {
+    function menuStartSwipe(e) {
       e.preventDefault();
       mouseDownX = e.clientX;
-      dragMenu = true;
+      swipe_menu = true;
     }
 
-    function swipeMenuDrag(e) {
-      moveDistance = Math.max(Math.min(e.clientX - mouseDownX + menuLastX, 0), -M_Width);
-      $swipeMenu.style.cssText = 'transform: translate(' + moveDistance + 'px, 0px)';
-      if (moveDistance > -M_Width) {
-        var opacity = Math.min((moveDistance + M_Width) / M_Width, 1);
+    function menuDrag(e) {
+      moveDistance = Math.max(Math.min(e.clientX - mouseDownX + last_position, 0), -menu_width);
+      $menu.style.cssText = 'transform: translate(' + moveDistance + 'px, 0px)';
+      if (moveDistance > -menu_width) {
+        var opacity = Math.min((moveDistance + menu_width) / menu_width, 1);
         $overlay.style.cssText = 'visibility: visible; opacity:' + opacity + '';
       } else {
         $overlay.style.cssText = 'visibility: hidden';
       }
     }
 
-    function swipeMenuDragFinish() {
-      dragMenu = false;
-      if (moveDistance + M_Width > M_Width / 2) {
-        swipeMenuOpen();
+    function menuFinalSwipe() {
+      swipe_menu = false;
+      if (moveDistance + menu_width > menu_width / 5) {
+        menuOpen();
       }
     }
 
-    function swipeMenuOpen() {
-      $swipeMenu.classList.add('active');
-      $swipeMenu.style.cssText = 'transition: transform .15s linear';
+    function menuOpen() {
+      $menu.classList.add('active');
+      $menu.style.cssText = 'transition: transform .2s linear';
       $overlay.classList.add('active');
-      $overlay.style.cssText = 'transition: opacity .1s linear';
+      $overlay.style.cssText = 'transition: opacity .2s linear';
       moveDistance = 0;
-      menuLastX = moveDistance;
+      last_position = moveDistance;
     }
 
-    function swipeMenuClose() {
-      $swipeMenu.classList.remove('active');
-      $swipeMenu.style.cssText = 'transition: transform 0.15s linear';
+    function menuClose() {
+      $menu.classList.remove('active');
+      $menu.style.cssText = 'transition: transform 0.2s linear';
       $overlay.classList.remove('active');
-      $overlay.style.cssText = 'transition: opacity .15s linear, visibility .2s linear';
-      moveDistance = -M_Width;
-      menuLastX = moveDistance;
+      $overlay.style.cssText = 'transition: opacity .2s linear, visibility .3s linear';
+      moveDistance = -menu_width;
+      last_position = moveDistance;
     }
   </script>
 </body>
